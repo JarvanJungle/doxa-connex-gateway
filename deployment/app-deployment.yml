@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: gateway-deployment
+  name: gateway-deployment
+spec:
+  replicas: {replicas}
+  selector:
+    matchLabels:
+      app: gateway-deployment
+  template:
+    metadata:
+      labels:
+        app: gateway-deployment
+    spec:
+      containers:
+        - image: {container_image}
+          name: gateway-pod
+          ports:
+            - containerPort: 80
+          imagePullPolicy: Always
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "kubernetes"
+#            - name: SPRING_PROFILES_ACTIVE
+#              valueFrom:
+#                configMapKeyRef:
+#                  name: connex-conf
+#                  key: SPRING_PROFILES_ACTIVE
+            - name: ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: connex-conf
+                  key: ENV
+            - name: USER_AUTHORIZATION_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: gateway-conf
+                  key: USER_AUTHORIZATION_URL
+            - name: CLIENT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: gateway-conf
+                  key: CLIENT_ID
+            - name: CLIENT_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  name: gateway-conf
+                  key: CLIENT_SECRET
+            - name: REDIRECT_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: gateway-conf
+                  key: REDIRECT_URL
